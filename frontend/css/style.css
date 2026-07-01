@@ -1,0 +1,812 @@
+/*
+  =====================================================
+  CampusHaven KE — Stylesheet
+  =====================================================
+  This file contains ALL the CSS for the application.
+  We use a flat CSS approach (no preprocessor or CSS
+  framework) to keep things simple and educational.
+
+  ORGANISATION:
+    1. Reset & Base — removes browser defaults
+    2. Header — navigation bar at the top
+    3. Hero — the big banner section on the home page
+    4. City Grid — the clickable city cards
+    5. Filters — type/price filter buttons on browse
+    6. Listing Grid & Cards — the main listing cards
+    7. Detail Page — a single listing's full view
+    8. Forms — both contact form and add-listing form
+    9. About Page — static content pages
+    10. Utility — alerts, loading, error states
+    11. Footer — bottom bar
+    12. Responsive — media queries for mobile
+
+  COLOR SCHEME:
+    Primary green:   #2E7D32 (forest green, trust/safety)
+    Accent amber:    #FF9800 (attention, call-to-action)
+    Background:      #f4f7f6 (light grey-green)
+    Text:            #333 (dark grey, not pure black)
+    Borders:         #ddd (light grey)
+*/
+
+
+/* === 1. RESET & BASE === */
+/*
+  The universal selector (*) targets EVERY element.
+  We remove default margins/padding and set box-sizing
+  to border-box so padding doesn't add to element width.
+  This makes layouts much easier to manage.
+*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f7f6;  /* light grey-green background */
+    color: #333;                  /* dark grey text (easier on eyes than black) */
+    line-height: 1.6;             /* good line height for readability */
+    min-height: 100vh;            /* at least full viewport height */
+    display: flex;                /* flexbox column layout */
+    flex-direction: column;       /* header → main → footer stacked vertically */
+}
+
+/*
+  Anchor tags. We override the default blue/purple visited
+  link colours with our brand green.
+*/
+a { color: #2E7D32; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+
+/* === 2. HEADER === */
+header {
+    background-color: #2E7D32;    /* our primary green */
+    color: white;
+    padding: 1rem 5%;             /* 1rem top/bottom, 5% left/right */
+    display: flex;
+    justify-content: space-between; /* logo left, nav right */
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* subtle shadow below header */
+    flex-wrap: wrap;              /* wraps on small screens */
+    gap: 0.5rem;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;              /* looks clickable */
+    white-space: nowrap;          /* prevents "CampusHaven KE" from wrapping */
+}
+
+.logo:hover { text-decoration: none; }
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+header nav a:hover { text-decoration: underline; }
+
+
+/* === 3. HERO (Home Page Banner) === */
+/*
+  The hero is the large banner that appears at the top
+  of the home page. It uses a background image with a
+  dark overlay (gradient with rgba black) to make the
+  white text readable on top of any image.
+
+  The image is from Unsplash (free stock photos).
+  linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55))
+  creates a semi-transparent black layer over the image.
+*/
+.hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.hero h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+.hero p { font-size: 1.1rem; margin-bottom: 1.5rem; opacity: 0.9; }
+
+/*
+  The search bar on the hero section.
+  Display:flex with a gap creates the horizontal
+  input + button layout.
+*/
+.search-container {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+}
+
+.search-container input {
+    flex: 1;                      /* input takes remaining space */
+    padding: 0.8rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.search-container button {
+    padding: 0.8rem 1.5rem;
+    background-color: #FF9800;    /* amber accent CTA */
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;  /* smooth colour change on hover */
+}
+
+.search-container button:hover { background-color: #e68a00; }
+
+
+/* === 4. CONTAINER (Page Width Wrapper) === */
+/*
+  A reusable container to centre content and limit
+  max-width to 1100px for readability.
+  margin: 2rem auto — auto centres horizontally.
+*/
+.container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; width: 100%; }
+
+
+/* === 5. CITY GRID (Home Page) === */
+/*
+  CSS Grid layout for the city selector cards.
+  auto-fit with minmax(160px, 1fr) means:
+  - Each card is at least 160px wide
+  - They stretch equally to fill the row
+  - When the screen shrinks, columns drop down automatically
+*/
+.city-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.city-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent; /* reserves space so hover border doesn't shift layout */
+}
+
+.city-card:hover {
+    transform: translateY(-3px);   /* lifts card slightly */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-color: #2E7D32;        /* green border on hover */
+}
+
+.city-card .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.city-card .name { font-weight: 600; font-size: 1rem; }
+.city-card .count { font-size: 0.8rem; color: #888; margin-top: 0.2rem; }
+
+
+/* === 6. FILTERS (Browse Page) === */
+/*
+  Filter tags are pills/buttons for filtering listings
+  by type or price range. They use display:flex with
+  flex-wrap:wrap so they flow naturally.
+*/
+.filters {
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-tag {
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;          /* rounded pill shape */
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* Both hover and .active get the same green fill */
+.filter-tag:hover, .filter-tag.active {
+    background-color: #2E7D32;
+    color: white;
+    border-color: #2E7D32;
+}
+
+
+/* === 7. LISTING GRID === */
+/*
+  The grid that holds listing cards on the browse
+  and home pages. Same auto-fit pattern as city-grid,
+  but with min card width of 300px.
+*/
+.listings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+
+/* === 8. LISTING CARD === */
+/*
+  An individual rental listing card. Each card has:
+  - An image area (card-img)
+  - A content area with price, title, location
+  - Amenities tags at the bottom
+  The whole card is clickable.
+*/
+.card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;             /* keeps image corners rounded */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.card:hover { transform: translateY(-5px); }
+
+.card-img {
+    height: 200px;
+    background-color: #ddd;
+    background-size: cover;       /* image covers the full area */
+    background-position: center;
+    position: relative;           /* needed for the .verified-badge absolute positioning */
+    display: flex;
+    align-items: flex-end;
+}
+
+/*
+  When no image is uploaded, we show a placeholder
+  gradient with a house emoji instead.
+*/
+.card-img .placeholder-img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2E7D32, #66BB6A);
+    color: white;
+    font-size: 2rem;
+}
+
+/*
+  The "Verified" badge is position:absolute so it sits
+  on top of the card image. The card-img has
+  position:relative which makes this absolute positioning
+  relative to it (not the whole page).
+*/
+.verified-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #2E7D32;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 4px;
+    z-index: 1;                   /* ensures badge is above the background image */
+}
+
+.card-content { padding: 1.2rem; }
+
+.price {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #2E7D32;
+    margin-bottom: 0.3rem;
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.location {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.8rem;
+}
+
+.amenities {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-top: 1px solid #eee;
+    padding-top: 0.8rem;
+}
+
+.amenity {
+    background: #f0f0f0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+
+/* === 9. DETAIL PAGE === */
+/*
+  When you click a listing card, you go to the detail
+  view which shows a large image, full description,
+  metadata (type, landlord, date), amenities, and a
+  contact form.
+*/
+.detail-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    color: #2E7D32;
+    cursor: pointer;
+}
+
+.back-link:hover { text-decoration: underline; }
+
+.detail-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.detail-img {
+    width: 100%;
+    height: 350px;
+    background-color: #ddd;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detail-img .placeholder-img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2E7D32, #66BB6A);
+    color: white;
+    font-size: 3rem;
+}
+
+.detail-body { padding: 2rem; }
+
+.detail-body .price {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.detail-body .title { font-size: 1.4rem; margin-bottom: 0.3rem; }
+.detail-body .location { font-size: 1rem; margin-bottom: 1rem; }
+
+/*
+  detail-meta is a grid displaying key info in boxes:
+  Type, Landlord, Date Listed. auto-fit with minmax(150px)
+  makes it responsive.
+*/
+.detail-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 6px;
+}
+
+.meta-item .label { font-size: 0.8rem; color: #888; }
+.meta-item .value { font-weight: 600; }
+
+.detail-body .description {
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+}
+
+.detail-body .amenities-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+
+/* === 10. FORMS === */
+.contact-section {
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+}
+
+.contact-section h3 { margin-bottom: 1rem; }
+
+.form-group { margin-bottom: 1rem; }
+
+.form-group label {
+    display: block;               /* label above the input */
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+}
+
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+/*
+  Button component classes.
+  .btn is the base, .btn-primary and .btn-secondary
+  add different colours, .btn-block makes it full-width.
+*/
+.btn {
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: #2E7D32;
+    color: white;
+}
+
+.btn-primary:hover { background-color: #1b5e20; }
+
+.btn-secondary {
+    background-color: #FF9800;
+    color: white;
+}
+
+.btn-secondary:hover { background-color: #e68a00; }
+
+.btn-block { width: 100%; }
+
+/* Add Listing specific form */
+.form-container {
+    max-width: 650px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.form-container h2 { margin-bottom: 1.5rem; }
+
+/*
+  .form-row places two form fields side-by-side using
+  CSS Grid with 2 equal columns. On mobile it collapses
+  to single column via the media query.
+*/
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+
+/* === 11. ABOUT PAGE === */
+.about-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.about-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    margin-bottom: 1.5rem;
+}
+
+.about-card h2 { margin-bottom: 1rem; color: #2E7D32; }
+.about-card p { margin-bottom: 1rem; }
+.about-card ul { margin-left: 1.5rem; margin-bottom: 1rem; }
+.about-card li { margin-bottom: 0.3rem; }
+
+
+/* === 12. ALERTS / MESSAGES === */
+/*
+  Used to show success or error feedback after
+  form submissions (e.g., "Listing submitted!").
+*/
+.alert {
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.alert-success { background: #e8f5e9; color: #2E7D32; border: 1px solid #a5d6a7; }
+.alert-error { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+
+
+/* === 13. LOADING / ERROR / EMPTY STATES === */
+/*
+  These are shown to the user during data fetching
+  or when no results exist. They provide a better
+  experience than a blank page or broken UI.
+*/
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+    font-style: italic;
+}
+
+.error-state {
+    text-align: center;
+    padding: 3rem;
+}
+
+.error-state h3 { color: #c62828; margin-bottom: 0.5rem; }
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+}
+
+
+/* === 14. ADMIN DASHBOARD === */
+.admin-intro {
+    background: #e3f2fd;
+    border-left: 4px solid #1565c0;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.admin-section {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 1.5rem;
+}
+
+.admin-section h3 {
+    margin-bottom: 0.8rem;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.admin-hint {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 1rem;
+}
+
+.admin-area-item {
+    background: #e8f5e9;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.admin-area-item button[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-xs {
+    padding: 0.15rem 0.4rem;
+    font-size: 0.75rem;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btn-xs.btn-danger {
+    background-color: #c62828;
+    color: white;
+}
+
+.btn-xs.btn-danger:hover:not([disabled]) {
+    background-color: #b71c1c;
+}
+
+/* === 15. FOOTER === */
+.admin-container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.admin-container h2 {
+    margin-bottom: 1.5rem;
+    color: #2E7D32;
+}
+
+.admin-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.admin-stat-card {
+    background: white;
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    text-align: center;
+    flex: 1;
+    min-width: 140px;
+}
+
+.admin-stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2E7D32;
+}
+
+.admin-stat-label {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.admin-area-badge {
+    background: #e8f5e9;
+    color: #2E7D32;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Edit panel */
+.admin-edit-panel {
+    background: #fffde7;
+    border: 2px solid #FF9800;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-edit-panel h3 {
+    margin-bottom: 1rem;
+    color: #e65100;
+}
+
+/* Listing table */
+.admin-table-wrapper {
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.admin-table th {
+    background: #f5f5f5;
+    text-align: left;
+    padding: 0.8rem;
+    font-weight: 600;
+    border-bottom: 2px solid #ddd;
+    white-space: nowrap;
+}
+
+.admin-table td {
+    padding: 0.7rem 0.8rem;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+    background: #f9f9f9;
+}
+
+.admin-row-editing {
+    background: #fffde7 !important;
+}
+
+.admin-actions {
+    white-space: nowrap;
+}
+
+.btn-sm {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    margin-right: 0.3rem;
+}
+
+.btn-warning {
+    background-color: #FF9800;
+    color: white;
+}
+
+.btn-warning:hover { background-color: #e68a00; }
+
+.btn-danger {
+    background-color: #c62828;
+    color: white;
+}
+
+.btn-danger:hover { background-color: #b71c1c; }
+
+/* === 15. FOOTER === */
+footer {
+    background: #1b1b1b;
+    color: #aaa;
+    text-align: center;
+    padding: 1.5rem;
+    /*
+      margin-top:auto pushes the footer to the bottom
+      when the page content is shorter than the viewport.
+      This works because body is display:flex column
+      with min-height:100vh.
+    */
+    margin-top: auto;
+    font-size: 0.9rem;
+}
+
+
+/* === 16. RESPONSIVE (Mobile) === */
+/*
+  Media queries let us apply CSS only when the screen
+  is at or below a certain width. 600px is a common
+  breakpoint for mobile phones.
+
+  When the screen is narrow:
+  - Header switches to column layout
+  - Hero text gets smaller
+  - Search bar and forms become vertical
+  - Detail image gets shorter
+  - City grid cards get smaller minimum width
+*/
+@media (max-width: 600px) {
+    header { flex-direction: column; text-align: center; }
+    header nav a { margin: 0 0.75rem; }
+    .hero h2 { font-size: 1.5rem; }
+    .hero { padding: 3rem 1rem; }
+    .search-container { flex-direction: column; }
+    .form-row { grid-template-columns: 1fr; }    /* side-by-side → stacked */
+    .detail-img { height: 220px; }
+    .city-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+}

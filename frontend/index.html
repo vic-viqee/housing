@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<!--
+  =====================================================
+  CampusHaven KE — Main HTML Shell
+  =====================================================
+  This is the SPA (Single Page Application) shell.
+  It contains:
+    - The <header> with logo and navigation
+    - The <main> element where all dynamic content goes
+    - The <footer>
+    - Script tags that load our JavaScript files
+
+  HOW SPAs WORK:
+  Instead of loading a new HTML page for every route
+  (like /browse, /about, etc.), we load ONE html file
+  and use JavaScript to swap the content inside <main>
+  based on the URL hash (e.g., #/browse, #/about).
+
+  The hash is the part after the # in a URL.
+  The browser never sends the hash to the server,
+  so our FastAPI server just serves this same index.html
+  for every request. The frontend JS handles the rest.
+  =====================================================
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--
+      viewport meta makes the page responsive on mobile
+      initial-scale=1 means no default zoom on mobile devices
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusHaven KE — Find Student Housing in Kenya</title>
+    <!-- Link to our external CSS file (not inline styles) -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!--
+      ============ HEADER ============
+      Visible on every page. Contains:
+      - Logo (clickable, goes home)
+      - Nav links that use navigate() to change the hash
+    -->
+    <header>
+        <!--
+          The onclick attribute calls our navigate() function
+          (defined in router.js) to change window.location.hash
+          to '#/', which triggers the hashchange event and
+          the router loads the home page.
+        -->
+        <div class="logo" onclick="navigate('#/')">CampusHaven KE</div>
+        <nav>
+            <!--
+              The href="#/" provides a fallback URL if JS fails.
+              The onclick overrides the default behaviour and
+              uses our smooth navigation function instead.
+            -->
+            <a href="#/" onclick="navigate('#/')">Home</a>
+            <a href="#/add" onclick="navigate('#/add')">List Your Room</a>
+            <a href="#/admin" onclick="navigate('#/admin')">Admin</a>
+            <a href="#/about" onclick="navigate('#/about')">Help & Safety</a>
+        </nav>
+    </header>
+
+    <!--
+      ============ MAIN CONTENT ============
+      This is the "app" container.
+      Our JavaScript router (router.js) will set
+      this element's innerHTML to the HTML of the
+      current page (home, browse, detail, add, about).
+
+      Initially it's empty — the user sees nothing
+      until the JS loads and runs the router.
+    -->
+    <main id="app"></main>
+
+    <!--
+      ============ FOOTER ============
+      Stays at the bottom thanks to CSS flexbox
+      (body is display:flex with min-height:100vh,
+      and footer has margin-top:auto).
+    -->
+    <footer>
+        <p>&copy; 2026 CampusHaven KE — Helping students find safe housing across Kenya.</p>
+    </footer>
+
+    <!--
+      ============ SCRIPT LOADING ORDER ============
+      Scripts are loaded in ORDER. This matters because:
+      1. api.js   — defines apiFetch, apiGetListings, etc.
+      2. state.js — defines AppState (used by render.js)
+      3. render.js — defines renderHome, renderBrowse, etc.
+      4. router.js — defines navigate, router, submitListing, etc.
+      5. app.js   — wires up event listeners for hashchange/load
+
+      If we loaded app.js before router.js, the navigate()
+      function called in index.html onclick would not exist yet.
+      This is why the order matters in vanilla JS projects.
+    -->
+    <script src="/js/api.js"></script>
+    <script src="/js/state.js"></script>
+    <script src="/js/render.js"></script>
+    <script src="/js/router.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
