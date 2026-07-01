@@ -22,7 +22,8 @@
 """
 
 import asyncio
-from sqlalchemy import select
+import sys
+from sqlalchemy import select, text
 
 from backend.database import async_session, init_db
 from backend.models import Listing, Area
@@ -75,19 +76,27 @@ SAMPLE_LISTINGS = [
 ]
 
 
-async def seed():
+async def seed(force=False):
     """
     Main seed function — Embu focused.
-    Safe to run multiple times (idempotent — skips if data exists).
-    To re-seed: delete campus_haven.db and run again.
+
+    Normal mode: skips if data exists (idempotent).
+    Force mode (--force): clears all data and re-seeds.
+    Use --force on PostgreSQL (can't just delete a file).
     """
     await init_db()
     async with async_session() as session:
         # Check if data already exists
         existing = await session.execute(select(Listing))
         if existing.scalars().all():
-            print("Database already has data. Skipping seed.")
-            return
+            if not force:
+                print("Database already has data. Use --force to re-seed.")
+                return
+            # Clear existing data (PostgreSQL-safe)
+            await session.execute(text("DELETE FROM listings"))
+            await session.execute(text("DELETE FROM areas"))
+            await session.commit()
+            print("Cleared existing data.")
 
         # Step 1: Seed areas
         for name in ALL_AREAS:
@@ -105,4 +114,5 @@ async def seed():
 
 
 if __name__ == "__main__":
-    asyncio.run(seed())
+    force = "--force" in sys.argv
+    asyncio.run(seed(force=force))

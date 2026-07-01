@@ -20,7 +20,7 @@ CampusHaven KE is a student housing platform focused on **Embu, Kenya** — spec
 | Database | SQLite (via SQLAlchemy async) |
 | Image storage | Local filesystem (`backend/uploads/`) |
 
-## Getting Started
+## Getting Started (Local Development)
 
 ### 1. Create and activate a Python virtual environment
 
@@ -48,6 +48,9 @@ uvicorn backend.main:app --reload --port 8000
 ```
 
 Open http://localhost:8000 in your browser.
+
+> Locally, the app uses SQLite (zero-config, file stored at `backend/campus_haven.db`).
+> In production (Render), it uses PostgreSQL via the `DATABASE_URL` environment variable.
 
 ## Areas Covered
 

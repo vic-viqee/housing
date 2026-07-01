@@ -80,6 +80,9 @@ uvicorn backend.main:app --reload --port 8000
 
 Opens at http://localhost:8000
 
+> Locally uses **SQLite** (auto). On Render uses **PostgreSQL** via `DATABASE_URL` env var.
+> To re-seed on Render or after switching to PostgreSQL: `python -m backend.seed --force`
+
 ## API Conventions
 
 - All endpoints return JSON
