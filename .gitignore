@@ -5,3 +5,7 @@ backend/uploads/*
 !backend/uploads/.gitkeep
 venv/
 .env
+AGENTS.md
+Procfile
+runtime.txt
+scenario.md
